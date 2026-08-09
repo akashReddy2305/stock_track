@@ -19,16 +19,10 @@ class StockDetailScreen extends StatelessWidget {
   }
 
   Future<void> _openGrowwApp(BuildContext context, StockItem stockItem) async {
-    final slug = StockService.getGrowwSlug(stockItem.symbol, stockItem.companyName);
-    final cleanSymbol = StockService.getDisplaySymbol(stockItem.symbol);
-
-    final List<String> urlCandidates = [
-      'https://groww.in/stocks/$slug',
-      'groww://stocks/$slug',
-      'groww://stock/$slug',
-      'groww://stocks/$cleanSymbol',
-      'groww://stock/$cleanSymbol',
-    ];
+    final List<String> urlCandidates = StockService.getGrowwUrlCandidates(
+      stockItem.symbol,
+      stockItem.companyName,
+    );
 
     for (final urlStr in urlCandidates) {
       try {
@@ -44,7 +38,8 @@ class StockDetailScreen extends StatelessWidget {
     }
 
     try {
-      final Uri fallbackUri = Uri.parse('https://groww.in/stocks/$slug');
+      final cleanSymbol = StockService.getDisplaySymbol(stockItem.symbol);
+      final Uri fallbackUri = Uri.parse('https://groww.in/search?q=$cleanSymbol');
       await launchUrl(fallbackUri, mode: LaunchMode.externalApplication);
     } catch (e) {
       if (context.mounted) {

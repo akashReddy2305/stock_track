@@ -38,7 +38,7 @@ class StockService {
     'ONGC.NS': 'Oil & Natural Gas Corp Ltd',
     'ADANIENT.NS': 'Adani Enterprises Limited',
     'ADANIPORTS.NS': 'Adani Ports & SEZ Ltd',
-    'ADANIENSOL.NS': 'Adani Energy Solutions Limited',
+    'ADANIENSOL.NS': 'Adani Energy Solutions',
     'ADANIGREEN.NS': 'Adani Green Energy Limited',
     'ADANIPOWER.NS': 'Adani Power Limited',
     'ATGL.NS': 'Adani Total Gas Limited',
@@ -76,7 +76,8 @@ class StockService {
     'ONGC': 'oil-natural-gas-corporation-ltd',
     'ADANIENT': 'adani-enterprises-ltd',
     'ADANIPORTS': 'adani-ports-and-special-economic-zone-ltd',
-    'ADANIENSOL': 'adani-energy-solutions-ltd',
+    'ADANIENSOL': 'adani-transmission-ltd', // Groww's official URL slug for Adani Energy Solutions
+    'ADANITRANS': 'adani-transmission-ltd',
     'ADANIGREEN': 'adani-green-energy-ltd',
     'ADANIPOWER': 'adani-power-ltd',
     'ATGL': 'adani-total-gas-ltd',
@@ -86,22 +87,27 @@ class StockService {
     'BEL': 'bharat-electronics-ltd',
   };
 
-  /// Get exact Groww stock URL slug for deep linking directly to stock detail page
-  static String getGrowwSlug(String symbol, [String? companyName]) {
+  /// Get candidate Groww URLs prioritized by accuracy to avoid 404 errors
+  static List<String> getGrowwUrlCandidates(String symbol, String companyName) {
     final cleanSym = getDisplaySymbol(normalizeSymbol(symbol)).toUpperCase();
+    final List<String> candidates = [];
+
+    // 1. Verified Groww Stock Slugs
     if (growwStockSlugs.containsKey(cleanSym)) {
-      return growwStockSlugs[cleanSym]!;
+      final slug = growwStockSlugs[cleanSym]!;
+      candidates.add('https://groww.in/stocks/$slug');
+      candidates.add('groww://stocks/$slug');
+      candidates.add('groww://stock/$slug');
     }
-    if (companyName != null && companyName.isNotEmpty) {
-      String slug = companyName.toLowerCase();
-      slug = slug.replaceAll(RegExp(r'[^a-z0-9\s-]'), '');
-      slug = slug.replaceAll(RegExp(r'\s+'), '-');
-      if (slug.endsWith('-limited')) {
-        slug = '${slug.substring(0, slug.length - 8)}-ltd';
-      }
-      if (slug.isNotEmpty) return slug;
+
+    // 2. Fail-safe search URLs (Guaranteed no 404 page)
+    final cleanName = companyName.replaceAll(RegExp(r'\s+(Limited|Ltd\.?)$', caseSensitive: false), '').trim();
+    if (cleanName.isNotEmpty) {
+      candidates.add('https://groww.in/search?q=${Uri.encodeComponent(cleanName)}');
     }
-    return cleanSym.toLowerCase();
+    candidates.add('https://groww.in/search?q=${Uri.encodeComponent(cleanSym)}');
+
+    return candidates;
   }
 
   /// Normalize user symbol (e.g., RELIANCE -> RELIANCE.NS)
