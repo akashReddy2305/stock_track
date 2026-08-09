@@ -38,6 +38,11 @@ class StockService {
     'ONGC.NS': 'Oil & Natural Gas Corp Ltd',
     'ADANIENT.NS': 'Adani Enterprises Limited',
     'ADANIPORTS.NS': 'Adani Ports & SEZ Ltd',
+    'ADANIENSOL.NS': 'Adani Energy Solutions Limited',
+    'ADANIGREEN.NS': 'Adani Green Energy Limited',
+    'ADANIPOWER.NS': 'Adani Power Limited',
+    'ATGL.NS': 'Adani Total Gas Limited',
+    'AWL.NS': 'Adani Wilmar Limited',
     'TATASTEEL.NS': 'Tata Steel Limited',
     'HAL.NS': 'Hindustan Aeronautics Limited',
     'BEL.NS': 'Bharat Electronics Limited',
@@ -71,6 +76,11 @@ class StockService {
     'ONGC': 'oil-natural-gas-corporation-ltd',
     'ADANIENT': 'adani-enterprises-ltd',
     'ADANIPORTS': 'adani-ports-and-special-economic-zone-ltd',
+    'ADANIENSOL': 'adani-energy-solutions-ltd',
+    'ADANIGREEN': 'adani-green-energy-ltd',
+    'ADANIPOWER': 'adani-power-ltd',
+    'ATGL': 'adani-total-gas-ltd',
+    'AWL': 'adani-wilmar-ltd',
     'TATASTEEL': 'tata-steel-ltd',
     'HAL': 'hindustan-aeronautics-ltd',
     'BEL': 'bharat-electronics-ltd',
@@ -428,6 +438,8 @@ class StockService {
         return 845.30;
       case 'ZOMATO':
         return 265.10;
+      case 'ADANIENSOL':
+        return 1024.50;
       default:
         return 1250.00;
     }
